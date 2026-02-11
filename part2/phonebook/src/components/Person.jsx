@@ -12,11 +12,11 @@ export const PersonForm = ({ onSubmit, onNameChange, onNumberChange, nameValue, 
     </form>
 );
 
-export const Persons = ({ personsToShow }) => (
+export const Persons = ({ personsToShow, onDelete }) => (
     <div>
         {personsToShow.map((person) => (
             <p key={person.id}>
-                {person.name} {person.number}
+                {person.name} {person.number} <button onClick={() => onDelete(person.id)}>delete</button>
             </p>
         ))}
     </div>
