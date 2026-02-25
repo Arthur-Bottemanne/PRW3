@@ -30,7 +30,7 @@ const App = () => {
 
     const addPerson = (event) => {
         event.preventDefault();
-        const existingPerson = persons.find((p) => p.name === newName);
+        const existingPerson = persons.find((person) => person.name === newName);
 
         if (existingPerson) {
             updatePerson(existingPerson);
@@ -58,23 +58,23 @@ const App = () => {
             personService
                 .update(person.id, changedPerson)
                 .then((returnedPerson) => {
-                    setPersons(persons.map((p) => (p.id !== person.id ? p : returnedPerson)));
+                    setPersons(persons.map((person) => (person.id !== person.id ? person : returnedPerson)));
                     notify(`Updated ${returnedPerson.name}'s number`);
                     setNewName("");
                     setNewNumber("");
                 })
                 .catch((error) => {
                     notify(`Information of ${person.name} has already been removed from server`, "error");
-                    setPersons(persons.filter((p) => p.id !== person.id));
+                    setPersons(persons.filter((oldPerson) => oldPerson.id !== person.id));
                 });
         }
     };
 
     const deletePerson = (id) => {
-        const person = persons.find((p) => p.id === id);
+        const person = persons.find((person) => person.id === id);
         if (window.confirm(`Delete ${person.name}?`)) {
             personService.destroy(id).then(() => {
-                setPersons(persons.filter((p) => p.id !== id));
+                setPersons(persons.filter((person) => person.id !== id));
                 notify(`Deleted ${person.name}`);
             });
         }
