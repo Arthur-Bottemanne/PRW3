@@ -40,15 +40,19 @@ const App = () => {
         const newPerson = {
             name: newName,
             number: newNumber,
-            id: (persons.length + 1).toString(),
         };
 
-        personService.create(newPerson).then((createdPerson) => {
-            setPersons(persons.concat(createdPerson));
-            notify(`Added ${createdPerson.name}`);
-            setNewName("");
-            setNewNumber("");
-        });
+        personService
+            .create(newPerson)
+            .then((createdPerson) => {
+                setPersons(persons.concat(createdPerson));
+                notify(`Added ${createdPerson.name}`);
+                setNewName("");
+                setNewNumber("");
+            })
+            .catch((error) => {
+                notify(error.response.data.error, "error");
+            });
     };
 
     const updatePerson = (person) => {
@@ -58,14 +62,18 @@ const App = () => {
             personService
                 .update(person.id, changedPerson)
                 .then((returnedPerson) => {
-                    setPersons(persons.map((person) => (person.id !== person.id ? person : returnedPerson)));
+                    setPersons(persons.map((p) => (p.id !== person.id ? p : returnedPerson)));
                     notify(`Updated ${returnedPerson.name}'s number`);
                     setNewName("");
                     setNewNumber("");
                 })
                 .catch((error) => {
-                    notify(`Information of ${person.name} has already been removed from server`, "error");
-                    setPersons(persons.filter((oldPerson) => oldPerson.id !== person.id));
+                    if (error.response.data.error) {
+                        notify(error.response.data.error, "error");
+                    } else {
+                        notify(`Information of ${person.name} has already been removed from server`, "error");
+                        setPersons(persons.filter((p) => p.id !== person.id));
+                    }
                 });
         }
     };
